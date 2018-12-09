@@ -5,36 +5,34 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 )
 
 func main() {
-	freq := 0
-	seen := map[int]bool{}
 
-	var line string
-
-	scanner := bufio.NewScanner(os.Stdin)
-	for scanner.Scan() {
-		line = scanner.Text()
-		op := line[0]
-		delta, err := strconv.Atoi(line[1:])
+	var nums []int
+	s := bufio.NewScanner(os.Stdin)
+	for s.Scan() {
+		var n int
+		_, err := fmt.Sscanf(s.Text(), "%d", &n)
 		if err != nil {
-			panic(err)
+			log.Fatalf("Can't read %s: %v", s.Text(), err)
 		}
-		if (op == '+') {
-			freq = freq + delta
-		} else if (op == '-') {
-			freq = freq - delta
-		}
-		if _, ok := seen[freq]; ok == true {
-			fmt.Println(freq)
-			return
-		}
-		seen[freq] = true
+		nums = append(nums, n)
+	}
+	if err := s.Err(); err != nil {
+		log.Fatal(err)
 	}
 
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+	seen := map[int]bool{0: true}
+	sum := 0
+	for {
+		for _, freq := range nums {
+			sum += freq
+			if _, isThere := seen[sum]; isThere == true {
+				fmt.Println(sum)
+				return
+			}
+			seen[sum] = true
+		}
 	}
 }
