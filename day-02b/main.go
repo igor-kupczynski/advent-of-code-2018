@@ -19,17 +19,15 @@ func main() {
 }
 
 func readLines() []string {
-	scanner := bufio.NewScanner(os.Stdin)
-	lines := make([]string, 0, 1000)
+	scan := bufio.NewScanner(os.Stdin)
+	var lines []string
 
-	var idx = 0
-	for scanner.Scan() {
-		lines = lines[0:idx+1]
-		lines[idx] = scanner.Text()
-		idx++
+	for scan.Scan() {
+		line := scan.Text()
+		lines = append(lines, line)
 	}
 
-	if err := scanner.Err(); err != nil {
+	if err := scan.Err(); err != nil {
 		log.Fatal(err)
 	}
 	return lines
@@ -51,12 +49,14 @@ func findDist1(lines []string) (lineA, lineB string) {
 
 
 func distance(a string, b string) int {
+	if len(a) != len(b) {
+		return math.MaxInt32
+	}
 	diff := 0
-	for i := 0; i < int(math.Min(float64(len(a)), float64(len(b)))); i++ {
+	for i := 0; i < len(a); i++ {
 		if (a[i] != b[i]) {
 			diff++
 		}
 	}
-	diff = diff + int(math.Abs(float64(len(a)) - float64(len(b))))
 	return diff
 }
